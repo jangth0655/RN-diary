@@ -6,6 +6,7 @@ import {useState} from 'react';
 import {Alert} from 'react-native';
 import {useDB} from '../hooks/useDB';
 import {FEELING} from '../hooks/useAppReady';
+import uuid from 'react-native-uuid';
 
 type Props = NativeStackScreenProps<StackParamList, 'Write'>;
 
@@ -20,14 +21,18 @@ export default function Write({navigation: {goBack}}: Props) {
     if (feelings === '' || selectedEmotion === null) {
       return Alert.alert('Please complete form.');
     }
-    realm?.write(() => {
-      realm.create(FEELING, {
-        _id: String(Date.now()),
-        emotion: selectedEmotion,
-        message: feelings,
+    if (realm !== null && realm) {
+      console.log('realm not undefined');
+      const result = realm.write(() => {
+        realm.create(FEELING, {
+          _id: uuid.v4(),
+          emotion: selectedEmotion,
+          message: feelings,
+        });
       });
-    });
-    goBack();
+
+      goBack();
+    }
   };
 
   return (

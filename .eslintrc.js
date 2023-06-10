@@ -14,6 +14,7 @@ module.exports = {
     curly: 'off',
     'react/no-unstable-nested-components': 'off',
     'jsx-quotes': 'off',
-    quotes: ['warn', 'single'],
+    quotes: ['off', 'single'],
+    'no-unreachable': 'warn',
   },
 };
