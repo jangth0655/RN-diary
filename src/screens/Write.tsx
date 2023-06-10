@@ -23,7 +23,7 @@ export default function Write({navigation: {goBack}}: Props) {
     }
     if (realm !== null && realm) {
       console.log('realm not undefined');
-      const result = realm.write(() => {
+      realm.write(() => {
         realm.create(FEELING, {
           _id: uuid.v4(),
           emotion: selectedEmotion,

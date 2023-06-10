@@ -7,29 +7,39 @@ import {useDB} from '../hooks/useDB';
 import {useEffect, useState} from 'react';
 import {FEELING} from '../hooks/useAppReady';
 import {FeelingType} from '../types';
-import {FlatList} from 'react-native';
+import {FlatList, LayoutAnimation, Platform, UIManager} from 'react-native';
 import Record from '../components/Record';
 
 type Props = NativeStackScreenProps<StackParamList, 'Home'>;
 
+if (
+  Platform.OS === 'android' &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 export default function Home({navigation: {navigate}}: Props) {
   const {realm} = useDB();
-  const [feelings, setFeelings] = useState<
-    Realm.Results<FeelingType & Realm.Object<unknown, never>> | undefined
-  >();
+  const [feelings, setFeelings] = useState<any>([]);
 
   useEffect(() => {
     const feelingsItem = realm?.objects<FeelingType>(FEELING);
-    setFeelings(realm?.objects<FeelingType>(FEELING));
-    feelingsItem?.addListener(() => {
-      const subscribeFeeling = realm?.objects<FeelingType>(FEELING);
-      setFeelings(subscribeFeeling);
+    feelingsItem?.addListener((items, changes) => {
+      LayoutAnimation.linear();
+      setFeelings(items.sorted('_id', true));
     });
-
     return () => {
       feelingsItem?.removeAllListeners();
     };
   }, [realm]);
+
+  const onPress = (id: string) => {
+    realm?.write(() => {
+      const findFeelings = realm.objectForPrimaryKey(FEELING, id);
+      realm.delete(findFeelings);
+    });
+  };
 
   return (
     <View>
@@ -38,7 +48,7 @@ export default function Home({navigation: {navigate}}: Props) {
         data={feelings}
         contentContainerStyle={{paddingVertical: 10}}
         keyExtractor={feeling => feeling._id}
-        renderItem={({item}) => <Record feeling={item} />}
+        renderItem={({item}) => <Record feeling={item} onPress={onPress} />}
         ItemSeparatorComponent={Separator}
       />
       <Button style={{elevation: 5}} onPress={() => navigate('Write')}>

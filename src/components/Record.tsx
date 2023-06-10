@@ -4,16 +4,24 @@ import colors from '../../colors';
 
 type Props = {
   feeling: FeelingType;
+  onPress: (id: string) => void;
 };
 
-export default function Record({feeling: {_id, emotion, message}}: Props) {
+export default function Record({
+  feeling: {_id, emotion, message},
+  onPress,
+}: Props) {
   return (
-    <Container>
-      <Emotion>{emotion}</Emotion>
-      <Message>{message}</Message>
-    </Container>
+    <Pressible onPress={() => onPress(_id)}>
+      <Container>
+        <Emotion>{emotion}</Emotion>
+        <Message>{message}</Message>
+      </Container>
+    </Pressible>
   );
 }
+
+const Pressible = styled.Pressable``;
 
 const Container = styled.View`
   flex-direction: row;
