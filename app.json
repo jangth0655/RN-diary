@@ -1,4 +1,7 @@
 {
   "name": "diary",
-  "displayName": "diary"
+  "displayName": "diary",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-5768555145395694~6874331585"
+  }
 }

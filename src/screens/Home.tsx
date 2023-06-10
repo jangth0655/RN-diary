@@ -45,6 +45,7 @@ export default function Home({navigation: {navigate}}: Props) {
     <View>
       <Title>나의 여행</Title>
       <FlatList
+        style={{marginVertical: 100, width: '100%'}}
         data={feelings}
         contentContainerStyle={{paddingVertical: 10}}
         keyExtractor={feeling => feeling._id}
